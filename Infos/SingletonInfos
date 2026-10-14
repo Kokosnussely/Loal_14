@@ -1,6 +1,7 @@
 Singleton Design Pattern:
 
 Online Description: https://refactoring.guru/design-patterns/singleton 
+Java Specific: https://refactoring.guru/design-patterns/singleton/java/example
 
 • Einzigartigkeit: Eine Klasse kann zu keinem Zeitpunkt mehr als ein einziges Objekt erzeugen.
 • Privater Konstruktor: Der Konstruktor der Klasse wird auf private gesetzt, damit von außen (mit new Class()) keine neuen Instanzen erzeugt werden können.
