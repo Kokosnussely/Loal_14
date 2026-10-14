@@ -1,0 +1,47 @@
+14. Druck-/Dokumentenverwaltung
+Design Pattern: Singleton
+Ausgangssituation
+Entwickle eine Anwendung zur Verwaltung von Druckaufträgen.
+Alle Teile der Anwendung müssen auf eine zentrale Drucker-/Auftragsverwaltung zugreifen.
+Muss-Anforderungen
+Die Anwendung muss:
+ Druckaufträge erstellen
+ Druckaufträge anzeigen
+ Aufträge löschen
+ Prioritäten verwalten
+ Druckstatus anzeigen
+ Aufträge speichern
+ eine zentrale Druckerverwaltung besitzen
+ das Singleton Pattern verwenden
+Beispiel:
+Druckauftrag
+----------------
+id
+dateiname
+seiten
+prioritaet
+status
+Die zentrale Verwaltung:
+PrintManager
+----------------
+instance
+auftraege
+addJob()
+removeJob()
+startJob()
+cancelJob()
+Alle Fenster/Komponenten greifen auf dieselbe PrintManager-Instanz zu.
+Kann-Anforderungen
+ mehrere Drucker
+ Druckwarteschlange
+ Prioritätswarteschlange
+ geschätzte Druckdauer
+ Druckhistorie
+ simulierte Druckerwarteschlange
+ Statistiken
+
+
+Vorsicht:
+Bei Singleton würde ich den Schülern besonders deutlich vorgeben, welche Ressource
+tatsächlich nur einmal existieren darf. Sonst besteht die Gefahr, dass sie lediglich eine
+beliebige Klasse zum Singleton machen, ohne den Sinn des Patterns zu verstehen.
