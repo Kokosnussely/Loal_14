@@ -6,35 +6,35 @@ Classes needed (aktuell von Claude):
 │ PrintManager  «Singleton»                   │
 ├─────────────────────────────────────────────┤
 │ - instance : PrintManager        {static}   │
-│ - auftraege : List<Druckauftrag>            │
-│ - naechsteId : int                          │
-│ - dateiPfad : String                        │
+│ - jobs : List<PrintJob>                     │
+│ - nextId : int                              │
+│ - filePath : String                         │
 ├─────────────────────────────────────────────┤
 │ - PrintManager()                            │
 │ + getInstance() : PrintManager   {static}   │
-│ + addJob(dateiname, seiten, prio) : Druckauftrag │
+│ + addJob(fileName, pages, prio) : PrintJob  │
 │ + removeJob(id : int) : boolean             │
 │ + startJob(id : int) : void                 │
 │ + cancelJob(id : int) : void                │
-│ + setPrioritaet(id : int, p : Prioritaet)   │
-│ + getJobs() : List<Druckauftrag>            │
-│ + getJob(id : int) : Druckauftrag           │
+│ + setPriority(id : int, p : Priority)       │
+│ + getJobs() : List<PrintJob>                │
+│ + getJob(id : int) : PrintJob               │
 │ + getStatus(id : int) : Status              │
-│ + speichern() : void                        │
-│ + laden() : void                            │
+│ + save() : void                             │
+│ + load() : void                             │
 └─────────────────────────────────────────────┘
                      │ 1
-                     │ verwaltet
+                     │ manages
                      │ 0..*
 ┌─────────────────────────────────────────────┐
-│ Druckauftrag                                │
+│ PrintJob                                    │
 ├─────────────────────────────────────────────┤
 │ - id : int                                  │
-│ - dateiname : String                        │
-│ - seiten : int                              │
-│ - prioritaet : Prioritaet                   │
+│ - fileName : String                         │
+│ - pages : int                               │
+│ - priority : Priority                       │
 │ - status : Status                           │
-│ - erstelltAm : LocalDateTime                │
+│ - createdAt : LocalDateTime                 │
 ├─────────────────────────────────────────────┤
 │ + Getter / Setter                           │
 │ + toString() : String                       │
@@ -43,12 +43,12 @@ Classes needed (aktuell von Claude):
          ▼                         ▼
 ┌──────────────────┐     ┌──────────────────┐
 │ «enum»           │     │ «enum»           │
-│ Prioritaet       │     │ Status           │
+│ Priority         │     │ Status           │
 ├──────────────────┤     ├──────────────────┤
-│ NIEDRIG          │     │ WARTEND          │
-│ NORMAL           │     │ IN_BEARBEITUNG   │
-│ HOCH             │     │ FERTIG           │
-│ DRINGEND         │     │ ABGEBROCHEN      │
+│ LOW              │     │ WAITING          │
+│ NORMAL           │     │ IN_PROGRESS      │
+│ HIGH             │     │ DONE             │
+│ URGENT           │     │ CANCELLED        │
 └──────────────────┘     └──────────────────┘
 
 
@@ -56,19 +56,19 @@ Classes needed (aktuell von Claude):
 │ MainWindow  (JFrame)                        │
 ├─────────────────────────────────────────────┤
 │ - manager : PrintManager                    │
-│ - auftragTabelle : JTable                   │
-│ - tabellenModell : AuftragTableModel        │
+│ - jobTable : JTable                         │
+│ - tableModel : JobTableModel                │
 ├─────────────────────────────────────────────┤
-│ + aktualisieren() : void                    │
+│ + refresh() : void                          │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ AuftragDialog  (JDialog)                    │
+│ JobDialog  (JDialog)                        │
 ├─────────────────────────────────────────────┤
 │ - manager : PrintManager                    │
-│ - dateinameFeld : JTextField                │
-│ - seitenFeld : JSpinner                     │
-│ - prioBox : JComboBox<Prioritaet>           │
+│ - fileNameField : JTextField                │
+│ - pagesField : JSpinner                     │
+│ - priorityBox : JComboBox<Priority>         │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
@@ -79,49 +79,49 @@ Classes needed (aktuell von Claude):
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ AuftragTableModel  (AbstractTableModel)     │
+│ JobTableModel  (AbstractTableModel)         │
 ├─────────────────────────────────────────────┤
 │ - manager : PrintManager                    │
-│ - spalten : String[]                        │
+│ - columns : String[]                        │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ Drucker                                     │
+│ Printer                                     │
 ├─────────────────────────────────────────────┤
 │ - id : int                                  │
 │ - name : String                             │
-│ - status : DruckerStatus                    │
-│ - aktuellerAuftrag : Druckauftrag           │
-│ - seitenProMinute : int                     │
-│ - warteschlange : PriorityQueue<Druckauftrag> │
+│ - status : PrinterStatus                    │
+│ - currentJob : PrintJob                     │
+│ - pagesPerMinute : int                      │
+│ - queue : PriorityQueue<PrintJob>           │
 ├─────────────────────────────────────────────┤
-│ + verarbeiten() : void                      │
-│ + istFrei() : boolean                       │
+│ + process() : void                          │
+│ + isIdle() : boolean                        │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ «enum» DruckerStatus                        │
+│ «enum» PrinterStatus                        │
 ├─────────────────────────────────────────────┤
-│ FREI, BESETZT, OFFLINE, FEHLER              │
+│ IDLE, BUSY, OFFLINE, ERROR                  │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ HistorieEintrag                             │
+│ HistoryEntry                                │
 ├─────────────────────────────────────────────┤
-│ - auftragId : int                           │
-│ - dateiname : String                        │
+│ - jobId : int                               │
+│ - fileName : String                         │
 │ - endStatus : Status                        │
-│ - abgeschlossenAm : LocalDateTime           │
-│ - druckerName : String                      │
+│ - completedAt : LocalDateTime               │
+│ - printerName : String                      │
 └─────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────┐
-│ Statistik                                   │
+│ Statistics                                  │
 ├─────────────────────────────────────────────┤
-│ - gesamtAuftraege : int                     │
-│ - gesamtSeiten : int                        │
-│ - abgebrochen : int                         │
-│ - durchschnittlicheDauer : double           │
+│ - totalJobs : int                           │
+│ - totalPages : int                          │
+│ - cancelled : int                           │
+│ - averageDuration : double                  │
 ├─────────────────────────────────────────────┤
-│ + berechne(List<HistorieEintrag>) : void    │
+│ + calculate(List<HistoryEntry>) : void      │
 └─────────────────────────────────────────────┘
