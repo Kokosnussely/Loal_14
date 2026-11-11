@@ -1,0 +1,65 @@
+**Singleton Pattern**
+
+**Was?**
+
+- von einer Klasse gibt es nur 1 Objekt im ganzen Programm
+- alle greifen auf dasselbe Objekt zu → dieselben Daten
+
+**Aufbau (3 Sachen)**
+
+- private static Variable `instance` → speichert das eine Objekt
+- private Konstruktor → kein `new` von außen möglich
+- public static `getInstance()` → gibt immer dasselbe Objekt zurück
+- beim 1. Aufruf erstellt (lazy), danach nur zurückgeben
+
+**Mein Code (PrintManager)**
+
+```
+public static class PrintManager {
+    private static PrintManager instance;              // die 1 Instanz
+    private final List<String> jobs = new ArrayList<>(); // Warteschlange
+    private PrintManager() { }                         // kein new von aussen
+    public static synchronized PrintManager getInstance() {
+        if (instance == null) instance = new PrintManager();
+        return instance;
+    }
+    public void addJob(String jobName) { ... }   // hinten anhaengen
+    public void printNext() { ... }              // ersten drucken + loeschen
+    public int getJobCount() { ... }             // wie viele noch warten
+}
+PrintManager manager = PrintManager.getInstance();  // NICHT new!
+```
+
+**Was passiert in main?**
+
+- `getInstance()` → instance ist null → Objekt wird erstellt
+- 3x `addJob` → Homework.pdf, Photo.png, Report.docx in der Liste
+- `printNext()` → nimmt den ersten raus (FIFO) → "Printing: Homework.pdf"
+- würde ein 2. Teil `getInstance()` aufrufen → selbes Objekt, sieht dieselben Jobs
+
+**Warum hier Singleton?**
+
+- es darf nur 1 Druckwarteschlange geben
+- mit 2 Managern → jeder eigene Liste → Jobs gehen verloren / doppelt
+
+**Andere Beispiele**
+
+- FileServer → 1 Dateispeicher
+- Logger → 1 Logdatei
+- Config → Einstellungen nur 1x laden
+- DB-Verbindung → teuer, nur 1x aufbauen
+- Java: `Runtime.getRuntime()`
+- NICHT: PrintJob, Printer, HistoryEntry → gibt es mehrere!
+
+**Vorteile / Nachteile**
+
+- \+ nur 1 Objekt → Daten immer gleich
+- \+ von überall erreichbar
+- − globaler Zustand, versteckte Abhängigkeiten
+- − schwer zu testen
+- − Threads: ohne `synchronized` evtl. 2 Objekte
+
+**Merken!**
+
+- nur verwenden, wenn es die Sache wirklich nur 1x geben darf
+- Eager-Variante: `instance = new PrintManager()` gleich oben → sofort erstellt, threadsicher
