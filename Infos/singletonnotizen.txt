@@ -1,6 +1,6 @@
 **Singleton Pattern**
 
-**Was?**
+Was?
 
 - von einer Klasse gibt es nur 1 Objekt im ganzen Programm
 - alle greifen auf dasselbe Objekt zu → dieselben Daten
